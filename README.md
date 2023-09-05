@@ -72,6 +72,7 @@ In contrast, the Proactor pattern involves the handler, or the event demultiplex
 <img src="images/f3_proactor.png" style="width: 90%;" />  
 
 **3. Thread Pool**  
+  
 A thread pool is utilized to manage multiple worker threads that process incoming HTTP requests. By reusing a fixed number (corresponding to CPU cores) of threads, the web server avoids the overhead of dynamically creating and destroying threads for each incoming request. The worker threads process tasks from a shared task queue, which stores incoming HTTP requests. This approach ensures efficient utilization of server resources and maintains high throughput.
 The `ThreadPool` class performs the following tasks:
 - It allocates multiple threads statically during initialization, minimizing the overhead of frequently creating and deleting threads.
@@ -79,7 +80,8 @@ The `ThreadPool` class performs the following tasks:
 - When a new request arrives, it is stored in a request queue (a list).
 - A worker thread from the “ThreadPool” is then awakened to acquire and handle the new HTTP request from the request queue.
 
-**4. MySQL Database and Connection Pool**
+**4. MySQL Database and Connection Pool**  
+  
 MySQL database is used to store user authentication data, enabling the web server to provide login services for concurrent users. The database connection pool manages multiple concurrent connections to the MySQL database, preventing performance degradation caused by establishing and closing database connections for each incoming request.
 The `ConnectionPool` class performs the following tasks:
 - Defined utilizing the Singleton pattern.
@@ -87,7 +89,8 @@ The `ConnectionPool` class performs the following tasks:
 - When the process requires database access, it obtains a free connection from the pool.
 - After completing the database operation, the process releases the connection back to the pool.
 
-**5. Connection Timer**
+**5. Connection Timer**  
+  
 Connection timers are used to monitor and manage connections, ensuring optimal resource usage and server performance. They can detect idle connections and close them, freeing up resources for other active connections. 
 The `ListTimer` class performs the following tasks:
 - Create a list of timer using an ascending doubly-linked list, where timers are sorted by their expiration time from shortest to longest (head expires first, tail last). 
