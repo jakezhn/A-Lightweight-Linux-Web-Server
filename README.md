@@ -64,11 +64,13 @@ In this project, only the LT mode is implemented.
 
 **2. Concurrent Event Handling Pattern: Reactor and Proactor**  
 
-In reactor pattern, the web server uses a event demultiplexer thread (typically the main thread) to handle all incoming events, such as network connections and data transfers. This thread is responsible for registering new event to a evennt dispatcher (an event table), and monitoring all events. When an event occurs, the main thread notifies the relevant server application to handle the event by calling a event handler (a worker thread) which was registered on the dispatcher, and inform this thread to read from socket and perform processing for the event, such as reading or writing data to the socket, and returns control to the thread to wait for the next event. 
+In reactor pattern, the web server uses a event demultiplexer thread (typically the main thread) to handle all incoming events, such as network connections and data transfers. This thread is responsible for registering new event to a evennt dispatcher (an event table), and monitoring all events. When an event occurs, the main thread notifies the relevant server application to handle the event by calling a event handler (a worker thread) which was registered on the dispatcher, and inform this thread to read from socket and perform processing for the event, such as reading or writing data to the socket, and returns control to the thread to wait for the next event.   
+  
 <img src="images/f2_reactor.png" style="width: 90%;" />
 
 Proactor pattern is another event handling pattern used in web servers to handle concurrent connections. The Reactor design pattern involves the event demultiplexer waiting for events to indicate when a file descriptor or socket is ready for a read or write operation. The appropriate handler then performs the read or write operation.
-In contrast, the Proactor pattern involves the handler, or the event demultiplexer acting on behalf of the handler, initiating asynchronous read and write operations. The actual I/O operation is performed by the operating system, which receives parameters such as the addresses of user-defined data buffers from which it retrieves data to write or to which it stores read data. The event demultiplexer then waits for events indicating the completion of the I/O operation and forwards them to the appropriate handlers.
+In contrast, the Proactor pattern involves the handler, or the event demultiplexer acting on behalf of the handler, initiating asynchronous read and write operations. The actual I/O operation is performed by the operating system, which receives parameters such as the addresses of user-defined data buffers from which it retrieves data to write or to which it stores read data. The event demultiplexer then waits for events indicating the completion of the I/O operation and forwards them to the appropriate handlers.  
+   
 <img src="images/f3_proactor.png" style="width: 90%;" />  
 
 **3. Thread Pool**  
