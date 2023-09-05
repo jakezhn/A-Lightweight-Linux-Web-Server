@@ -1,11 +1,3 @@
-/*
-Description:
-    Defined a timer class based on an ascending double-line linked list, in which timers is sorted from short to long by their expire time 
-    (list head is the first to expire, tail is the last). 
-    The expire time for each connection is 15s since its initialization or last interation with the server, any data exchange will renew the timer.
-    The timer list will be checked by root process for each 5s, timeout connection will be considered inactive and closed. 
-*/
-
 #ifndef LST_TIMER
 #define LST_TIMER
 

@@ -1,12 +1,3 @@
-/*
-Author: Hongnan Zhang
-Class: ECE6122
-Last Date Modified: 2022/12/6
-Description:
-    Defines a thread pool class. Multiple threads are allocated statically at initialization to avoid future overhead of frequently creating and deleting threads.
-    Main thread's job is to listen on server port for new http request, and when a new request arrives, it will be stored into a request queue (a list).
-    Then a worker thread in thread pool will be awakened, to acquire and handle the newly arrived http request from the request queue.
-*/
 #ifndef THREADPOOL_H
 #define THREADPOOL_H
 

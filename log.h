@@ -1,11 +1,3 @@
-/*
-Author: Hongnan Zhang
-Class: ECE6122
-Last Date Modified: 2022/12/6
-Description:
-    Define the log class using singleton pattern.
-    Generate log with standard format: year-month-date hour:miniute:second.microsecond [level]: <content>
-*/
 #ifndef LOG_H
 #define LOG_H
 

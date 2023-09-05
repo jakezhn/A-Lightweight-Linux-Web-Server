@@ -1,11 +1,3 @@
-/*
-Author: Hongnan Zhang
-Class: ECE6122
-Last Date Modified: 2022/12/6
-Description:
-    Defined a mutual locker class. Referenced from book: The Linux Programming Interface: A Linux and UNIX System Programming Handbook by Michael Kerrisk.
-*/
-
 #ifndef LOCKER_H
 #define LOCKER_H
 

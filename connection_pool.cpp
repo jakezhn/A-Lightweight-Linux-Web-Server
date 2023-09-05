@@ -1,14 +1,3 @@
-/*
-Author: Hongnan Zhang
-Class: ECE6122
-Last Date Modified: 2022/12/6
-Description:
-	Define the connection pool class using singleton pattern.
-	The resources in the connection pool are a set of database connections that are statically allocated ,and dynamically used and released by the process.
-	When the process needs to access the database, it is allocated a free connection from pool, 
-	and then the process releases the database connection after completing the database operation.
-*/
-
 #include <mysql/mysql.h>
 #include <stdio.h>
 #include <string>

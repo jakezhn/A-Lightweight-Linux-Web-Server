@@ -1,21 +1,3 @@
-/*
-Author: Hongnan Zhang
-Class: ECE6122
-Last Date Modified: 2022/12/6
-Description:
-    Main function of web server. 
-    Initialze kernel IO event table, thread pool, connection pool, log, timer, listen socket and signals.
-    IO events are handled with synchronized proactor pattern, listen, receive and response to http requests only happens on main thread. 
-    Other threads in thread pool are considered as worker thread, they are in charge of reading and writing buffers parsing http message, process the requests.
-    When a new request arrives the server port on main thread, listen socket register it to kernel event table and a request queue, and bind it with a timer.
-    Then a free worker thread is awakened from thread pool and assigned the request from the queue. 
-    After request is processed, a wirte event will be registered to kernel event table.
-    Finally, main thread will write response to the socket and send to client when it is availiable.
-    In POST requests (needs to access database), a free Mysql connection is awakened from connection pool and assigned to the worker thread. 
-    Each connection is binded with a timer, wihch is periodically checked by main thread for timeout event, triggered by SIGALRM.
-    When it has not interacted with the server for a certain time, the connection is consisdered inactive and closed by main thread.
-*/
-
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>

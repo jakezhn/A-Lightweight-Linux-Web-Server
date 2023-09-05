@@ -1,12 +1,3 @@
-/*
-Author: Hongnan Zhang
-Class: ECE6122
-Last Date Modified: 2022/12/6
-Description:
-    Define the log class using singleton pattern. 
-    Generate log with standard format: year-month-date hour:miniute:second.microsecond [level]: <content>, 
-    and store logs to file "year_month_date_ServerLog".
-*/
 #include <string.h>
 #include <time.h>
 #include <sys/time.h>

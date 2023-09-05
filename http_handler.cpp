@@ -1,15 +1,3 @@
-/*
-Author: Hongnan Zhang
-Class: ECE6122
-Last Date Modified: 2022/12/6
-Description:
-    Defined http handler class. 
-    When the client (browser) initiate a new http connection, a new http instance will be create in main thread and store that request in its receive buffer. 
-    Then the http instance will be added to a request queue, one of other work threads will process the request which instance carries.
-    After a work thread acquires the instance, processRead will be called to read and parse the http message.
-    Finally, processRequest will be called to generate response, which is then written to send buffer and sent to client on main thread.
-*/
-
 #include <map>
 #include <mysql/mysql.h>
 #include <fstream>
