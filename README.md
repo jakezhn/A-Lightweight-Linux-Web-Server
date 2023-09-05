@@ -6,10 +6,11 @@ This is a learning-oriented project, aims to build a lightweight web server appl
 - Create an HTTP parser to enable handling of both GET and POST requests from web browser users.
 - Establish a thread pool mechanism to effectively manage concurrent HTTP requests and improve system responsiveness.
 - Utilize a MySQL database in conjunction with a connection pool to offer registration, authentication, and login services to multiple concurrent users, ensuring data integrity and efficient access.
-## Project Architecture
+## Architecture
 <img src="images/f1_architecture.png" style="width: 60%;" />
 
-## Quick Demo 
+## Implementation
+<img src="images/f4_classdiagram.png" style="width: 100%;" />
 
 ## Running Instruction
 **1. Develop & test environment**  
