@@ -1,6 +1,6 @@
 # A-Lightweight-Linux-Web-Server
 ## Overview
-The goal of this project is to develop a high-performance web server application capable of handling concurrent client connections efficiently.
+The goal of this project is to develop a lightweight Linux web server application capable of handling concurrent client connections efficiently.
 
 Key technical features include:
 
