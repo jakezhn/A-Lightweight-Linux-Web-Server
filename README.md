@@ -104,7 +104,7 @@ The `ListTimer` class performs the following tasks:
 - The root process checks the timer list every 5 seconds, deeming connections that have timed out as inactive and closing them.
 
 ## Reference
-[1] Kerrisk, M. (2012) The linux programming interface: A linux and UNIX system programming handbook. San Francisco, CA: No Starch Press. 
+[1] Kerrisk, M. (2012) The linux programming interface: A linux and UNIX system programming handbook. San Francisco, CA: No Starch Press.   
 [2] Stevens, W.R. (1998) Unix network programming. Upper Saddle River, NJ: Prentice Hall PTR.   
 [3] 游双, Linux高性能服务器编程  
 [4] Beej's Guide to Network Programming, https://beej.us/guide/bgnet/   
