@@ -52,9 +52,3 @@ To  `const char* doc_root = "<your directory of resource file>";`
   
 `gcc webbench.c -o webbench`  
 `./webbench -c 5000 -t 5 http://localhost:9000/` // Where arg for -c is number of clients, for -t is time in seconds  
-[3] 游双, Linux高性能服务器编程  
-[4] Beej's Guide to Network Programming, https://beej.us/guide/bgnet/   
-[5] linyacool, A C++ High Performance Web Server, https://github.com/linyacool/WebServer   
-[6] markparticle, C++ Linux WebServer, https://github.com/markparticle/WebServer
-
-
