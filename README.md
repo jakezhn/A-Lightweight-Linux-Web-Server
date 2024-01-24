@@ -1,8 +1,8 @@
 # A-Lightweight-Linux-Web-Server
 ## Overview
-The goal of this project is to develop a lightweight Linux web server application capable of handling concurrent client connections efficiently.
+The goal of this project is to implement a lightweight Linux web server application that is capable of handling concurrent client connections efficiently.
 
-Key technical features include:
+Key features include:
 
 - Leveraging Linux's epoll API for scalable non-blocking I/O event notification to enable asynchronous, non-blocking I/O operations.
 - Implementing a simulated Proactor design pattern through synchronized I/O techniques to optimize concurrent request processing.
