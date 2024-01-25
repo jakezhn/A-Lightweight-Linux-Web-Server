@@ -4,11 +4,12 @@ The goal of this project is to implement a lightweight Linux web server applicat
 
 Key features include:
 
-- Leveraging Linux's epoll API for scalable non-blocking I/O event notification to enable asynchronous, non-blocking I/O operations.
-- Implementing a simulated Proactor design pattern through synchronized I/O techniques to optimize concurrent request processing.
-- Building an HTTP request parser to support parsing and handling of GET and POST requests from web clients.
-- Creating a thread pool to efficiently distribute incoming HTTP requests across multiple threads for improved responsiveness under load.
-- Integrating a MySQL database backend with connection pooling pattern to provide user registration, authentication, and login services while ensuring optimized database access.
+- Leveraged Linux's epoll API for scalable non-blocking I/O event notification to enable asynchronous, non-blocking I/O operations.
+- Implemented a simulated Proactor design pattern through synchronized I/O techniques to optimize concurrent request processing.
+- Built an HTTP request parser to support parsing and handling of GET and POST requests from web clients.
+- Created a thread pool to efficiently distribute incoming HTTP requests across multiple threads for improved responsiveness under load.
+- Integrated a MySQL database backend with a connection pooling pattern to provide user registration, authentication, and login services while ensuring optimized database access.
+- Implemented a logging system that records running status, error messages, and data access with timestamps. 
 
 ## Architecture
 <img src="images/f1_architecture.png" style="width: 60%;" />
