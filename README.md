@@ -1,4 +1,4 @@
-# A-Lightweight-Linux-Web-Server
+# A Lightweight Linux Web Server
 ## Overview
 The goal of this project is to implement a lightweight Linux web server application that is capable of handling concurrent client connections efficiently.
 
