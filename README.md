@@ -7,8 +7,8 @@ Key features include:
 - Leveraging Linux's epoll API for scalable non-blocking I/O event notification to enable asynchronous, non-blocking I/O operations.
 - Implementing a simulated Proactor design pattern through synchronized I/O techniques to optimize concurrent request processing.
 - Building an HTTP request parser to support parsing and handling of GET and POST requests from web clients.
-- Creating a thread pool architecture to efficiently distribute incoming HTTP requests across multiple threads for improved responsiveness under load.
-- Integrating a MySQL database backend with connection pooling to provide user registration, authentication, and login services while ensuring optimized database access.
+- Creating a thread pool to efficiently distribute incoming HTTP requests across multiple threads for improved responsiveness under load.
+- Integrating a MySQL database backend with connection pooling pattern to provide user registration, authentication, and login services while ensuring optimized database access.
 
 ## Architecture
 <img src="images/f1_architecture.png" style="width: 60%;" />
@@ -19,7 +19,6 @@ Key features include:
 Ubuntu 20.04  
 MySQL 5.7.30  
 FireFox browser  
-Webbench 1.5  
   
 **2. Create and use MySQL database**  
   
@@ -36,7 +35,7 @@ To `connPool->init("localhost", "root", "<your password>", "mydb", 6000, 8);`
   
 **4. Modify line 21 in http_handler.cpp**  
   
-From `const char* doc_root = "/home/zhn/Desktop/WebServer/resource";`  
+From `const char* doc_root = "<my directory of resource file>";`  
 To  `const char* doc_root = "<your directory of resource file>";`  
   
 **5. Make file and run server in terminal**  
@@ -48,11 +47,6 @@ To  `const char* doc_root = "<your directory of resource file>";`
   
 `localhost:port`  
   
-**7. Test with webbench1.5**  
-  
-`gcc webbench.c -o webbench`  
-`./webbench -c 5000 -t 5 http://localhost:9000/` // Where arg for -c is number of clients, for -t is time in seconds  
-
 ## Reference
 [1] Kerrisk, M. (2012) The linux programming interface: A linux and UNIX system programming handbook. San Francisco, CA: No Starch Press.   
 [2] Stevens, W.R. (1998) Unix network programming. Upper Saddle River, NJ: Prentice Hall PTR.   
