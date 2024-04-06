@@ -33,7 +33,7 @@ public:
     // Size of writeBuff buffer
     static const int writeBuff_BUFFER_SIZE = 2048;
 
-    // Http requests, only GET and POST are put into use in this lab
+    // Http requests, only GET and POST are put into use in this project
     enum METHOD
     {
         GET = 0,
