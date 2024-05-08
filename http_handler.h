@@ -1,41 +1,36 @@
 #ifndef HTTPCONNECTION_H
 #define HTTPCONNECTION_H
+
 #include <unistd.h>
 #include <signal.h>
-#include <sys/types.h>
-#include <sys/epoll.h>
 #include <fcntl.h>
+#include <sys/epoll.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <assert.h>
 #include <sys/stat.h>
 #include <string.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/mman.h>
 #include <stdarg.h>
 #include <errno.h>
-#include <sys/wait.h>
+#include <sys/mman.h>
 #include <sys/uio.h>
 
 #include "locker.h"
 #include "connection_pool.h"
 
-class httpHandler
-{
+// Handles HTTP requests and connections
+class httpHandler {
 public:
-    // Size of file name to read
+    // Constants for buffer sizes and filename length
     static const int FILENAME_LEN = 200;
-    // Size of read buffer
     static const int READ_BUFFER_SIZE = 2048;
-    // Size of writeBuff buffer
-    static const int writeBuff_BUFFER_SIZE = 2048;
+    static const int WRITE_BUFFER_SIZE = 2048;
 
-    // Http requests, only GET and POST are put into use in this project
-    enum METHOD
-    {
+    // Supported HTTP methods for this handler
+    enum METHOD {
         GET = 0,
         POST,
         HEAD,
@@ -47,145 +42,130 @@ public:
         PATH
     };
 
-    // Flags that indicates which part of the http message is to be parse
-    enum CHECK_STATE
-    {
-        // Read http request line
-        CHECK_STATE_REQUESTLINE = 0,
-        // Read http header
-        CHECK_STATE_HEADER,
-        // Read http data
-        CHECK_STATE_CONTENT
+    // Parsing states for the incoming HTTP request
+    enum CHECK_STATE {
+        REQUEST_LINE = 0,  // parsing the request line
+        HEADER,            // parsing the header
+        CONTENT            // parsing the body content
     };
 
-    // Flags that indicates the parsing results of http request line, header, data
-    enum HTTP_CODE
-    {
-        // Request is incomplete, continue listening
-        NO_REQUEST,
-        // Request is valid, process request
-        GET_REQUEST,
-        // Wrong request, send http error code
-        BAD_REQUEST,
-        // Resource does not exist, send http error code
-        NO_RESOURCE,
-        // No permission to requested resource, send http error code
-        FORBIDDEN_REQUEST,
-        // Requested file is accessable, process request
-        FILE_REQUEST,
-        // Server internal error
-        INTERNAL_ERROR,
-        // Connection closed, prepare to realease resource
-        CLOSED_CONNECTION
+    // Result codes from parsing HTTP requests
+    enum HTTP_CODE {
+        NO_REQUEST,         // More data needed to form a complete HTTP request
+        GET_REQUEST,        // A complete GET request is received
+        BAD_REQUEST,        // Malformed request data
+        NO_RESOURCE,        // Requested resource not found
+        FORBIDDEN_REQUEST,  // Access to the requested resource is forbidden
+        FILE_REQUEST,       // Request for a file that exists and can be served
+        INTERNAL_ERROR,     // Internal server error
+        CLOSED_CONNECTION   // Client has closed the connection
     };
 
-    // Flags of line parsing result
-    enum LINE_STATUS
-    {
-        // Finished parsing a whole line
-        LINE_OK = 0,
-        // Line is incomplete / has syntax error
-        LINE_BAD,
-        // Parsing is not finished yet
-        LINE_OPEN
+    // Status of parsing individual lines
+    enum LINE_STATUS {
+        LINE_OK = 0,   // Successfully parsed a complete line
+        LINE_BAD,      // Line is malformed or incorrect
+        LINE_OPEN      // Line parsing is incomplete
     };
 
-public:
-    httpHandler() {}
-    ~httpHandler() {}
+    httpHandler() : m_sockfd(-1), m_url(nullptr), m_version(nullptr), m_host(nullptr),
+                    m_content_length(0), m_linger(false), m_file_address(nullptr),
+                    m_method(GET), m_check_state(REQUEST_LINE), cgi(0), bytes_to_send(0),
+                    bytes_have_send(0), m_writeBuff_idx(0), m_read_idx(0), m_checked_idx(0),
+                    m_start_line(0) {}
 
-public:
-    // Init for sockets
-    void init(int sockfd, const sockaddr_in &addr);
-    // Close http connections
-    void closeConnection(bool real_close = true);
-    void process();
-    // Receive message to read buffer
-    bool readBuff();
-    // Send message from write buffer to client
-    bool writeBuff();
-    sockaddr_in *get_address()
-    {
-        return &m_address;
+    ~httpHandler() {
+        unmap(); // Unmap any mapped files
+        if (m_sockfd != -1) {
+            close(m_sockfd); // Close the socket if it's open
+        }
     }
-    // Init for Mysql table
+
+    // Initialize handler for a new connection
+    void init(int sockfd, const sockaddr_in &addr);
+    // Close the connection and clean up
+    void closeConnection(bool real_close = true);
+    // Main processing loop
+    void process();
+    // Read incoming data into the buffer
+    bool readBuff();
+    // Write data from the buffer to the client
+    bool writeBuff();
+    // Get the address of the connected socket
+    sockaddr_in *get_address() { return &m_address; }
+    // Initialize MySQL database connections
     void initMysql(connection_pool *connPool);
 
 private:
+    // Common initialization routine
     void init();
-    // Read from receive buffer, parsing request message
+    // Process read data
     HTTP_CODE processRead();
-    // Write response to send buffer
+    // Write response data to client
     bool processWrite(HTTP_CODE ret);
-    // Parsing http request, header, data
+    // Parse an HTTP request line
     HTTP_CODE parseRequest(char *text);
+    // Parse an HTTP header
     HTTP_CODE parseHeader(char *text);
+    // Parse HTTP body data
     HTTP_CODE parseData(char *text);
-    // Process request
+    // Handle a complete HTTP request
     HTTP_CODE processRequest();
-    // Move pointer to unparsed content
-    char *get_line() { return m_read_buf + m_start_line; };
+    // Get a pointer to the current line in the read buffer
+    char *get_line() { return m_read_buf + m_start_line; }
+    // Parse a line from the buffer
     LINE_STATUS parseLine();
-    // Unmap source file and memory
+    // Unmap the mapped file
     void unmap();
-    // Generate response, called by processRequest()
+    // Add formatted response to the buffer
     bool add_response(const char *format, ...);
+    // Add content to the HTTP response
     bool add_content(const char *content);
+    // Add the status line to the HTTP response
     bool add_status_line(int status, const char *title);
+    // Add headers to the HTTP response
     bool add_headers(int content_length);
+    // Add content type header
     bool add_content_type();
+    // Add content length header
     bool add_content_length(int content_length);
+    // Add connection header (keep-alive or close)
     bool add_linger();
+    // Add a blank line to signal the end of the headers
     bool add_blank_line();
 
 public:
-    // Epoll event table
+    // Static variables for epoll and user count
     static int m_epollfd;
-    // User counter
     static int m_user_count;
     MYSQL *mysql;
 
 private:
-    // Socket
+    // Connection details
     int m_sockfd;
     sockaddr_in m_address;
-    // Read buffer, stores requests
     char m_read_buf[READ_BUFFER_SIZE];
-    // Index of last bit in read buffer
+    char m_writeBuff_buf[WRITE_BUFFER_SIZE];
     int m_read_idx;
-    // Index of bit that is currently reading
     int m_checked_idx;
-    // Index of the last bit that has already been read
     int m_start_line;
-    // Write buffer, stores responses
-    char m_writeBuff_buf[writeBuff_BUFFER_SIZE];
-    // Index of last bit in write buffer
     int m_writeBuff_idx;
-    // Flags that indicates which part of the http message is to be parse
     CHECK_STATE m_check_state;
-    // Request type
     METHOD m_method;
-    // Http message content
     char m_real_file[FILENAME_LEN];
     char *m_url;
     char *m_version;
     char *m_host;
     int m_content_length;
     bool m_linger;
-
-    // File address in server
     char *m_file_address;
     struct stat m_file_stat;
-    // io vector for readv and writev
     struct iovec m_iv[2];
     int m_iv_count;
-    // Indicates POST request from clients
-    int cgi;        
-    // Store http header
-    char *m_string; 
-    // Bytes to be sent
+    int cgi;
+    char *m_string;
     int bytes_to_send;
-    // Bytes have been sent
     int bytes_have_send;
 };
+
 #endif
