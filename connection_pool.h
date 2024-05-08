@@ -1,73 +1,55 @@
-#ifndef _CONNECTION_POOL_
-#define _CONNECTION_POOL_
+#ifndef CONNECTION_POOL_H
+#define CONNECTION_POOL_H
 
-#include <stdio.h>
-#include <list>
-#include <mysql/mysql.h>
-#include <error.h>
-#include <string.h>
 #include <iostream>
+#include <list>
 #include <string>
+#include <mysql/mysql.h>
 
 #include "locker.h"
 
 using namespace std;
 
-class connection_pool
-{
+class connection_pool {
 public:
-	// Get Mysql connection
-	MYSQL *GetConnection();
-	// Release Mysql connection
-	bool ReleaseConnection(MYSQL *conn);
-	// Get a free connection from pool
-	int GetFreeConn();
-	// Destory all connctions
-	void DestroyPool();
+    connection_pool();
+    ~connection_pool();
 
-	// Using singleton pattern
-	static connection_pool *GetInstance();
+    // Singleton access
+    static connection_pool* GetInstance();
 
-	// Initialization
-	void init(string url, string User, string PassWord, string DataBaseName, int Port, unsigned int MaxConn); 
-	
-	connection_pool();
-	~connection_pool();
+    MYSQL* GetConnection();                        // Retrieve a connection from the pool
+    bool ReleaseConnection(MYSQL* conn);           // Return a connection to the pool
+    int GetFreeConn();                             // Get the number of available connections
+    void DestroyPool();                            // Destroy all connections and clean up the pool
+
+    void init(const string& url, const string& user, const string& password, const string& databaseName, int port, unsigned int maxConn);
 
 private:
-	// Max number of connections in the pool
-	unsigned int MaxConn;
-	// Connections currently put into use
-	unsigned int CurConn;
-	// Connection currently free
-	unsigned int FreeConn;
+    unsigned int MaxConn;      // Maximum number of connections in the pool
+    unsigned int CurConn;      // Number of connections currently in use
+    unsigned int FreeConn;     // Number of connections currently available
 
-private:
-	locker lock;
-	// List of connection pool
-	list<MYSQL *> connList;
-	sem reserve;
+    locker lock;               // Mutex for thread safety
+    list<MYSQL*> connList;     // List of available connections
+    sem reserve;               // Semaphore tracking available connections
 
-private:
-	// Server ddress
-	string url;
-	string Port;
-	// User name and password
-	string User;
-	string PassWord;
-	// Database name
-	string DatabaseName;
+    string url;                // Database URL
+    int port;                  // Database port
+    string user;               // Database user
+    string password;           // Database password
+    string databaseName;       // Database name
 };
 
-class connectionRAII{
-
+// RAII wrapper class for MySQL connections
+class connectionRAII {
 public:
-	connectionRAII(MYSQL **con, connection_pool *connPool);
-	~connectionRAII();
-	
+    connectionRAII(MYSQL** con, connection_pool* connPool);
+    ~connectionRAII();
+
 private:
-	MYSQL *conRAII;
-	connection_pool *poolRAII;
+    MYSQL* conRAII;            // Pointer to the MySQL connection
+    connection_pool* poolRAII; // Pointer to the connection pool
 };
 
-#endif
+#endif // CONNECTION_POOL_H
